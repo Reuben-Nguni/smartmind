@@ -10,43 +10,8 @@ router.get('/tutor', auth, async (req, res) => {
       return res.status(403).json({ message: 'Only tutors can access this endpoint' });
     }
 
-    // Mock lessons - in production, fetch from database where tutor is the instructor
-    const mockLessons = [
-      {
-        _id: '1',
-        courseTitle: 'React Basics',
-        description: 'Introduction to React components and JSX syntax',
-        scheduledDate: new Date(Date.now() + 86400000 * 2), // 2 days from now
-        enrolledCount: 45,
-        status: 'scheduled',
-      },
-      {
-        _id: '2',
-        courseTitle: 'React Basics',
-        description: 'Working with React Hooks - useState and useEffect',
-        scheduledDate: new Date(Date.now() + 3600000), // 1 hour from now
-        enrolledCount: 42,
-        status: 'live',
-      },
-      {
-        _id: '3',
-        courseTitle: 'React Basics',
-        description: 'Building a Todo App with React',
-        scheduledDate: new Date(Date.now() - 86400000), // 1 day ago
-        enrolledCount: 48,
-        status: 'completed',
-      },
-      {
-        _id: '4',
-        courseTitle: 'Advanced JavaScript',
-        description: 'Promise and Async/Await patterns',
-        scheduledDate: new Date(Date.now() + 86400000 * 5), // 5 days from now
-        enrolledCount: 38,
-        status: 'scheduled',
-      }
-    ];
-
-    res.json(mockLessons);
+    // Return empty array - lessons will be created when tutors schedule them
+    res.json([]);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching lessons', error: error.message });
   }
