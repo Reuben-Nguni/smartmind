@@ -15,6 +15,7 @@ import NotificationCenter from './pages/NotificationCenter';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import MyCourses from './pages/MyCourses';
+import ManageCourse from './pages/ManageCourse';
 import Home from './pages/Home';
 import Services from './pages/Services';
 import About from './pages/About';
@@ -142,6 +143,12 @@ const AppRoutes = () => {
       <Route path="/my-courses" element={
         <ProtectedRoute allowedRoles={['tutor']}>
           <MyCourses />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/courses/:courseId/manage" element={
+        <ProtectedRoute allowedRoles={['tutor']}>
+          <ManageCourse />
         </ProtectedRoute>
       } />
       

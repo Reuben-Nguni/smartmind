@@ -157,7 +157,7 @@ const TutorDashboard = () => {
                               </span>
                             </div>
                             <div className="mt-3">
-                              <Link to={`/courses/${course._id}`} className="btn btn-sm btn-primary me-2">
+                              <Link to={`/courses/${course._id}/manage`} className="btn btn-sm btn-primary me-2">
                                 Manage
                               </Link>
                               <button 
