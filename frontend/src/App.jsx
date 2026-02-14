@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCourses from './pages/admin/AdminCourses';
 import AdminEnrollments from './pages/admin/AdminEnrollments';
+import PasswordRecovery from './pages/admin/PasswordRecovery';
 import TutorDashboard from './pages/TutorDashboard';
 import LearnerDashboard from './pages/LearnerDashboard';
 import NotificationCenter from './pages/NotificationCenter';
@@ -105,6 +106,12 @@ const AppRoutes = () => {
         <Route path="/admin/enrollments" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminEnrollments />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/password-recovery" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <PasswordRecovery />
           </ProtectedRoute>
         } />
       

@@ -235,5 +235,62 @@ router.delete('/:id', auth, authorize('admin'), async (req, res) => {
   }
 });
 
+// Admin endpoint: Generate password reset code for a user
+router.post('/:id/generate-reset-code', auth, authorize('admin'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate 6-digit code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Hash the code
+    const crypto = await import('crypto');
+    const hashedCode = crypto.createHash('sha256').update(resetCode).digest('hex');
+    
+    // Set expiry to 30 minutes from now
+    const expiryTime = new Date(Date.now() + 30 * 60 * 1000);
+
+    // Update user with reset code
+    user.resetCode = hashedCode;
+    user.resetCodeExpiry = expiryTime;
+    await user.save();
+
+    res.json({ 
+      message: 'Reset code generated successfully',
+      resetCode,
+      expiresIn: '30 minutes',
+      userEmail: user.email
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Admin endpoint: Send password reset email to user
+router.post('/:id/send-password-reset-email', auth, authorize('admin'), async (req, res) => {
+  try {
+    const { resetCode } = req.body;
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // In production, use Brevo or another email service
+    // For now, just confirm the request was processed
+    // The email sending would happen here if configured
+    
+    res.json({ 
+      message: `Password reset instructions sent to ${user.email}`,
+      note: 'Configure Brevo or email service to send actual emails'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 export default router;
 

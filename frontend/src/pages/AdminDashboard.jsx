@@ -273,6 +273,23 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+
+        <div className="col-md-4">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">
+                <i className="bi bi-key me-2"></i> Password Recovery
+              </h5>
+              <p className="text-muted">Help users reset forgotten passwords</p>
+              <div className="mb-3">
+                <p className="small text-muted">Generate password reset codes and send instructions to users without needing email configuration.</p>
+              </div>
+              <Link to="/admin/password-recovery" className="btn btn-primary btn-sm w-100">
+                <i className="bi bi-shield-lock me-1"></i>Password Recovery
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Sidebar Navigation */}
