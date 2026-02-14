@@ -9,6 +9,9 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState({ field: 'createdAt', dir: -1 });
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
   const pageSize = 10;
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -24,8 +27,18 @@ export default function AdminUsers() {
     } finally { setLoading(false); }
   };
 
+  const filtered = useMemo(() => {
+    return users.filter(u => {
+      const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            u.email.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesRole = filterRole === 'all' || u.role === filterRole;
+      const matchesStatus = filterStatus === 'all' || u.status === filterStatus;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [users, searchTerm, filterRole, filterStatus]);
+
   const sorted = useMemo(() => {
-    const arr = [...users];
+    const arr = [...filtered];
     arr.sort((a,b) => {
       const f = sortBy.field;
       if (a[f] < b[f]) return -1 * sortBy.dir;
@@ -33,7 +46,7 @@ export default function AdminUsers() {
       return 0;
     });
     return arr;
-  }, [users, sortBy]);
+  }, [filtered, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
   const pageData = sorted.slice((page-1)*pageSize, page*pageSize);
@@ -65,11 +78,18 @@ export default function AdminUsers() {
 
   const exportCSV = () => {
     const headers = ['name','email','role','status','createdAt'];
-    const rows = users.map(u => headers.map(h => (u[h] || '').toString().replace(/"/g,'""')));
+    const rows = sorted.map(u => headers.map(h => (u[h] || '').toString().replace(/"/g,'""')));
     const csv = [headers.join(','), ...rows.map(r => '"'+r.join('","')+'"')].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'users.csv'; a.click(); URL.revokeObjectURL(url);
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setFilterRole('all');
+    setFilterStatus('all');
+    setPage(1);
   };
 
   return (
@@ -87,7 +107,75 @@ export default function AdminUsers() {
           <button className="btn btn-outline-primary me-2" onClick={() => fetchUsers()}>Refresh</button>
           <button className="btn btn-outline-secondary" onClick={exportCSV}>Export CSV</button>
         </div>
-        <div className="text-muted">Total: {users.length}</div>
+        <div className="text-muted">Total: {sorted.length} (of {users.length})</div>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="card mb-3 bg-light">
+        <div className="card-body">
+          <div className="row g-3">
+            {/* Search Box */}
+            <div className="col-md-4">
+              <div className="input-group">
+                <span className="input-group-text"><i className="bi bi-search"></i></span>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  placeholder="Search by name or email..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Role Filter */}
+            <div className="col-md-3">
+              <select 
+                className="form-select"
+                value={filterRole}
+                onChange={(e) => {
+                  setFilterRole(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="all">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="tutor">Tutor</option>
+                <option value="learner">Learner</option>
+              </select>
+            </div>
+
+            {/* Status Filter */}
+            <div className="col-md-3">
+              <select 
+                className="form-select"
+                value={filterStatus}
+                onChange={(e) => {
+                  setFilterStatus(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="all">All Status</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+
+            {/* Clear Filters Button */}
+            <div className="col-md-2">
+              <button 
+                className="btn btn-outline-warning w-100"
+                onClick={handleClearFilters}
+              >
+                <i className="bi bi-arrow-clockwise me-1"></i>Clear
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {loading ? (
