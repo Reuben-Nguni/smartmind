@@ -16,8 +16,11 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // Check if user exists
-    const existingUser = await User.findOne({ email });
+    // Normalize email to avoid case-based duplicates
+    const normalizedEmail = email ? email.toLowerCase().trim() : '';
+
+    // Check if user exists (case-insensitive)
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
@@ -29,7 +32,7 @@ router.post('/register', async (req, res) => {
     // Create user
     const user = new User({
       name,
-      email,
+      email: normalizedEmail,
       password,
       role: userRole,
       status: 'pending' // All users start as pending
@@ -48,6 +51,10 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
+    // Handle duplicate key errors from MongoDB (race conditions)
+    if (error && error.code === 11000) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
