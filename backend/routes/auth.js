@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
     res.status(201).json({
       message: 'Registration successful. Please wait for admin approval.',
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -82,7 +82,7 @@ router.post('/login', async (req, res) => {
     res.json({
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
