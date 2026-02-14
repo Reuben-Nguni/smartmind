@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { v2 as cloudinary } from 'cloudinary';
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -274,21 +276,62 @@ router.post('/:id/send-password-reset-email', auth, authorize('admin'), async (r
   try {
     const { resetCode } = req.body;
     const user = await User.findById(req.params.id);
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // In production, use Brevo or another email service
-    // For now, just confirm the request was processed
-    // The email sending would happen here if configured
-    
-    res.json({ 
-      message: `Password reset instructions sent to ${user.email}`,
-      note: 'Configure Brevo or email service to send actual emails'
+    if (!resetCode) {
+      return res.status(400).json({ message: 'Reset code is required' });
+    }
+
+    // Verify the reset code matches the hashed version stored on the user
+    if (!user.resetCode || !user.resetCodeExpiry) {
+      return res.status(400).json({ message: 'No reset code generated for this user' });
+    }
+
+    const hashed = crypto.createHash('sha256').update(resetCode).digest('hex');
+    if (hashed !== user.resetCode) {
+      return res.status(400).json({ message: 'Reset code does not match' });
+    }
+
+    if (new Date() > new Date(user.resetCodeExpiry)) {
+      return res.status(400).json({ message: 'Reset code has expired' });
+    }
+
+    // Configure Nodemailer transporter using Brevo (SMTP) or fallback envs
+    const transporter = nodemailer.createTransport({
+      host: process.env.BREVO_HOST || process.env.EMAIL_HOST,
+      port: process.env.BREVO_PORT ? parseInt(process.env.BREVO_PORT) : 587,
+      secure: false,
+      auth: {
+        user: process.env.BREVO_USER || process.env.EMAIL_USER,
+        pass: process.env.BREVO_PASS || process.env.EMAIL_PASS
+      }
     });
+
+    const frontendUrl = process.env.CLIENT_URL || process.env.FRONTEND_URL || 'http://localhost:3002';
+    const mailFrom = process.env.BREVO_FROM || process.env.EMAIL_FROM || 'no-reply@smartmind.com';
+
+    const mailOptions = {
+      from: mailFrom,
+      to: user.email,
+      subject: 'SmartMind Password Reset Instructions',
+      html: `
+        <p>Hello ${user.name || 'User'},</p>
+        <p>An administrator has requested a password reset for your SmartMind account.</p>
+        <p><strong>Reset code:</strong> <code>${resetCode}</code></p>
+        <p>This code will expire in 30 minutes. Use it on the <a href="${frontendUrl}/forgot-password">Forgot Password</a> page to reset your password.</p>
+        <p>If you did not request this, please contact support.</p>
+        <p>— SmartMind Team</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: `Password reset email sent to ${user.email}` });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error sending email', error: error.message });
   }
 });
 
