@@ -53,15 +53,15 @@ const Footer = () => {
             <h6 className="text-uppercase mb-4 font-weight-bold text-warning">Contact</h6>
             <p className="text-light">
               <i className="bi bi-geo-alt me-2"></i>
-              123 Education Street, Learning City
+              munkoyo street, kabwe, zambia
             </p>
             <p className="text-light">
               <i className="bi bi-envelope me-2"></i>
-              info@smartmind.com
+              smartmind1@gmail.com
             </p>
             <p className="text-light">
               <i className="bi bi-telephone me-2"></i>
-              +1 234 567 8900
+              +260 970067982 / +260 769963307
             </p>
           </div>
         </div>
