@@ -1,0 +1,73 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+.next
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+.turbo/
+dist-ssr/
+*.pem
+
+# Debug
+debug/
+npm-debug.log
+
+# Temporary files
+*.tmp
+temp/
+
+# Backend specific
+backend/uploads/
+backend/public/uploads/
+
+# Frontend specific
+frontend/.cache/
+frontend/coverage/
+
+# IDE Extensions
+*.code-workspace
