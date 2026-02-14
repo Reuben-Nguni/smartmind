@@ -57,6 +57,8 @@ const Profile = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    console.log('Avatar upload started:', { fileName: file.name, fileSize: file.size, fileType: file.type });
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       setMessage({ type: 'error', text: 'Please select an image file' });
@@ -74,15 +76,17 @@ const Profile = () => {
 
     try {
       setSaving(true);
+      console.log('Uploading avatar to /api/users/avatar');
       const response = await axios.post('/api/users/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      console.log('Avatar upload response:', response.data);
       setProfile(prev => ({ ...prev, avatar: response.data.avatar }));
       setMessage({ type: 'success', text: 'Avatar updated successfully!' });
       setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     } catch (error) {
-      console.error('Avatar upload error:', error);
-      setMessage({ type: 'error', text: error.response?.data?.message || 'Error uploading avatar' });
+      console.error('Avatar upload error:', error.response?.data || error.message);
+      setMessage({ type: 'error', text: error.response?.data?.message || error.message || 'Error uploading avatar' });
     } finally {
       setSaving(false);
     }

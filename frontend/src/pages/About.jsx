@@ -5,25 +5,25 @@ import Footer from '../components/Footer';
 const About = () => {
   const team = [
     {
-      name: 'Dr. Sarah Johnson',
+      name: '----',
       role: 'CEO & Founder',
       image: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=667eea&color=fff&size=200',
       bio: 'Former education minister with 20+ years in academic leadership.'
     },
     {
-      name: 'Michael Chen',
+      name: '-----',
       role: 'CTO',
       image: 'https://ui-avatars.com/api/?name=Michael+Chen&background=764ba2&color=fff&size=200',
       bio: 'Tech visionary bringing innovation to education.'
     },
     {
-      name: 'Emily Williams',
+      name: '---------',
       role: 'Head of Content',
       image: 'https://ui-avatars.com/api/?name=Emily+Williams&background=10b981&color=fff&size=200',
       bio: 'Curriculum expert passionate about quality education.'
     },
     {
-      name: 'David Martinez',
+      name: '----------',
       role: 'Head of Operations',
       image: 'https://ui-avatars.com/api/?name=David+Martinez&background=f59e0b&color=fff&size=200',
       bio: 'Operations specialist ensuring seamless user experience.'

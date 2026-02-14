@@ -1,10 +1,10 @@
 import express from 'express';
-import { requireAuth, requireApproved } from '../middleware/auth.js';
+import { auth, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Get lessons for tutor
-router.get('/tutor', requireAuth, requireApproved, async (req, res) => {
+router.get('/tutor', auth, async (req, res) => {
   try {
     if (req.user.role !== 'tutor') {
       return res.status(403).json({ message: 'Only tutors can access this endpoint' });
@@ -53,7 +53,7 @@ router.get('/tutor', requireAuth, requireApproved, async (req, res) => {
 });
 
 // Create new lesson (tutor only)
-router.post('/', requireAuth, requireApproved, async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
     if (req.user.role !== 'tutor') {
       return res.status(403).json({ message: 'Only tutors can create lessons' });
@@ -85,7 +85,7 @@ router.post('/', requireAuth, requireApproved, async (req, res) => {
 });
 
 // Update lesson status (start live, mark completed, etc.)
-router.put('/:id/status', requireAuth, requireApproved, async (req, res) => {
+router.put('/:id/status', auth, async (req, res) => {
   try {
     if (req.user.role !== 'tutor') {
       return res.status(403).json({ message: 'Only tutors can update lessons' });
@@ -112,7 +112,7 @@ router.put('/:id/status', requireAuth, requireApproved, async (req, res) => {
 });
 
 // Delete lesson
-router.delete('/:id', requireAuth, requireApproved, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     if (req.user.role !== 'tutor') {
       return res.status(403).json({ message: 'Only tutors can delete lessons' });

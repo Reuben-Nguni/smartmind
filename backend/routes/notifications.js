@@ -1,10 +1,10 @@
 import express from 'express';
-import { requireAuth, requireApproved } from '../middleware/auth.js';
+import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Get all notifications for logged-in user
-router.get('/', requireAuth, requireApproved, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     // Mock notifications - in production, fetch from database
     const mockNotifications = [
@@ -45,7 +45,7 @@ router.get('/', requireAuth, requireApproved, async (req, res) => {
 });
 
 // Get announcements (for learners)
-router.get('/announcements', requireAuth, requireApproved, async (req, res) => {
+router.get('/announcements', auth, async (req, res) => {
   try {
     // Mock announcements - in production, fetch from database
     const mockAnnouncements = [

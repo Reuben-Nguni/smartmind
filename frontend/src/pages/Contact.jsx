@@ -30,17 +30,17 @@ const Contact = () => {
     {
       icon: 'bi-geo-alt',
       title: 'Visit Us',
-      content: '123 Education Street, Learning City, LC 12345'
+      content: 'Munkoyo Street, Kabwe, Zambia'
     },
     {
       icon: 'bi-telephone',
       title: 'Call Us',
-      content: '+1 234 567 8900'
+      content: '+260970067982'
     },
     {
       icon: 'bi-envelope',
       title: 'Email Us',
-      content: 'info@smartmind.com'
+      content: 'smartmind1@gmail.com'
     },
     {
       icon: 'bi-clock',
