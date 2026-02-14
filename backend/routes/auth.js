@@ -64,8 +64,11 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Normalize email to match registration (case-insensitive)
+    const normalizedEmail = email ? email.toLowerCase().trim() : '';
+
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -120,7 +123,10 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(400).json({ message: 'Email is required' });
     }
 
-    const user = await User.findOne({ email });
+    // Normalize email to match registration (case-insensitive)
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       // Don't reveal if user exists (security best practice)
       return res.status(200).json({ 
@@ -162,7 +168,10 @@ router.post('/verify-reset-code', async (req, res) => {
       return res.status(400).json({ message: 'Email and code are required' });
     }
 
-    const user = await User.findOne({ email });
+    // Normalize email to match registration (case-insensitive)
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user || !user.resetCode) {
       return res.status(400).json({ message: 'Invalid or expired code' });
     }
@@ -200,7 +209,10 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
-    const user = await User.findOne({ email });
+    // Normalize email to match registration (case-insensitive)
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user || !user.resetCode) {
       return res.status(400).json({ message: 'Invalid request' });
     }
